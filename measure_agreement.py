@@ -50,13 +50,15 @@ def calculate_agreement(patients):
         for (anno1, anno2) in combinations(annotations, 2):
             try:
                 # Read segmentation files
+                # print(f"comparing {anno1['path']} and {anno2['path']}")
                 data1, _ = nrrd.read(anno1['path'])
                 data2, _ = nrrd.read(anno2['path'])
 
                 # Flatten the arrays for metric calculation
                 flat_data1 = data1.flatten()
                 flat_data2 = data2.flatten()
-
+                flat_data1[flat_data1 > 0] = 1.0
+                flat_data2[flat_data2 > 0] = 1.0
                 # Calculate metrics
                 kappa = cohen_kappa_score(flat_data1, flat_data2)
                 f1 = f1_score(flat_data1, flat_data2, average='binary')
